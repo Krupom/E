@@ -36,7 +36,7 @@ exports.addReservation = async (req, res) => {
     try {
         const { spaceId } = req.params;
         const payload = req.body;
-
+        console.log(payload);
         const result = await addReservation(req.user, spaceId, payload);
 
         if (result.waitlist) {
@@ -63,6 +63,7 @@ exports.updateReservation = async (req, res) => {
     const reservation = await updateReservation(req.params.id, req.user, req.body);
     res.status(200).json({ success: true, data: reservation });
   } catch (err) {
+    console.log(err.stack);
     res.status(err.status || 500).json({ success: false, message: err.message });
   }
 };

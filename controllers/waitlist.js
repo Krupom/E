@@ -1,19 +1,4 @@
-const {getWaitlist, getWaitlistBySpaceAndDate, removeWaitlistById, cancelUserWaitlist} = require('../service/waitlistService');
-
-//@desc     Get waitlist for a specific space and date
-//@route    GET /api/v1/space/:spaceId/waitlist
-//@access   Private / Admin
-exports.getWaitlistBySpaceAndDate = async (req, res) => {
-    try {
-        const { spaceId } = req.params;
-        const { reserveDate } = req.query;
-        console.log(spaceId);
-        const waitlist = await getWaitlistBySpaceAndDate(spaceId, reserveDate);
-        res.status(200).json({ success: true, count: waitlist.length, data: waitlist });
-    } catch (err) {
-        res.status(err.status || 500).json({ success: false, message: err.message });
-    }
-};
+const {getWaitlist, removeWaitlistById, cancelUserWaitlist} = require('../service/waitlistService');
 
 //@desc     Get all waitlists for a user
 //@route    GET /api/v1/waitlist
@@ -24,7 +9,9 @@ exports.getWaitlists = async (req, res) => {
         let userId = req.body?.userId ?? undefined;
         const reserveDate = req.body?.reserveDate ?? undefined;
         if(req.user.role !== "admin") userId = user.id;
+
         const waitlists = await getWaitlist(userId, spaceId, reserveDate);
+
         res.status(200).json({ success: true, count: waitlists.length, data: waitlists });
     } catch (err) {
         res.status(err.status || 500).json({ success: false, message: err.message });

@@ -28,7 +28,8 @@ const UserSchema = new mongoose.Schema({
     },
     tel: {
         type: String,
-        required: true
+        required: true,
+        match: [/^[0-9]{10}$/, 'Please add a valid phone number']
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,

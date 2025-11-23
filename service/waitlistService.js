@@ -19,18 +19,6 @@ exports.addWaitlist = async (userId, spaceId, reserveDate) => {
     }
 };
 
-/*exports.getWaitlistBySpaceAndDate = async (spaceId, reserveDate) => {
-    try {
-        console.log("sdfg", spaceId, reserveDate);
-        return await Waitlist.find({
-            spaceId,
-            reserveDate
-        }).populate('userId', 'name email');
-    } catch (err) {
-        throw createError(500, 'Failed to fetch waitlist');
-    }
-};*/
-
 exports.getWaitlist = async (userId, spaceId, reserveDate) => {
     try {
         const query = {};
@@ -44,24 +32,6 @@ exports.getWaitlist = async (userId, spaceId, reserveDate) => {
     }
 };
 
-/*exports.getWaitlists = async (user, spaceId = null) => {
-    try {
-        if (user.role !== 'admin') {
-            query = Waitlist.find({ user: user.id });
-        } else if (spaceId) {
-            query = Waitlist.find({ spaceId });
-        } else {
-            query = Waitlist.find();
-        }
-        return query.populate({
-            path: 'spaceId',
-            select: 'name province tel openTime closeTime'
-        });
-    } catch (err) {
-        throw createError(500, 'Failed to fetch user waitlists');
-    }
-};
-*/
 exports.removeWaitlistById = async (id) => {
     try {
         const result = await Waitlist.findByIdAndDelete(id);

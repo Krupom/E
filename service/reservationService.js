@@ -9,7 +9,7 @@ exports.getReservations = async (user, spaceId = null) => {
     let query;
 
     if (user.role !== 'admin') {
-        query = Reservation.find({ user: user.id });
+        query = Reservation.find({ userId: user.id });
     } else if (spaceId) {
         query = Reservation.find({ spaceId });
     } else {
@@ -61,8 +61,11 @@ exports.addReservation = async (user, spaceId, payload) => {
         spaceId,
         reserveDate: payload.reserveDate
     });
+
+    // Waitlist if full
     if (existsSameDay.length > 0) {
         const createWaitlist = await addWaitlist(payload.userId, spaceId, payload.reserveDate);
+        // sent noti
         await sentNotification(
             payload.userId, 
             "Waitlist added", 
@@ -70,6 +73,7 @@ exports.addReservation = async (user, spaceId, payload) => {
         );
         return {message: `The slot on ${payload.reserveDate} is full. You've been added to waitlist`, Waitlist: createWaitlist}
     }
+
     const createdReserve = await Reservation.create(payload);
     await sentNotification(
         payload.userId, 
@@ -82,6 +86,7 @@ exports.addReservation = async (user, spaceId, payload) => {
 exports.updateReservation = async (id, user, payload) => {
     const reservation = await Reservation.findById(id).populate("spaceId"); 
     if (!reservation) throw createError(404, 'Reservation not found');
+    console.log(reservation);
 
     if (reservation.userId.toString() !== user.id && user.role !== 'admin') {
         throw createError(401, 'Not authorized');
@@ -110,7 +115,10 @@ exports.deleteReservation = async (id, user) => {
 
     await Reservation.deleteOne({ _id: id });
 
+    //get next waitlist
     const nextlist = await pullNextWaitlist(spaceId, reserveDate);
+
+    //automatic add waitlist to reserve
     if(nextlist) {
         const user = await User.findById(nextlist.userId);
         if(user) await exports.addReservation(user, spaceId, {reserveDate});

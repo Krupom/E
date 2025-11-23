@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const {
     getWaitlists,
-    getWaitlistBySpaceAndDate,
     removeWaitlistById,
     cancelUserWaitlist
 } = require('../controllers/waitlist');

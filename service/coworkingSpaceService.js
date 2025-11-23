@@ -55,8 +55,6 @@ exports.createCoworkingSpace = async (data) => {
   const closetime = closeTime.split(":");
   const open = parseInt(opentime[0]) * 60 + parseInt(opentime[1]);
   const close = parseInt(closetime[0]) * 60 + parseInt(closetime[1]);
-
-  console.log(open, close);
   if(close <= open){
     throw createError(400, 'openTime mush be before closeTime');
   }
