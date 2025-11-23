@@ -8,7 +8,7 @@ exports.getWaitlists = async (req, res) => {
         const { spaceId } = req.params;
         let userId = req.body?.userId ?? undefined;
         const reserveDate = req.body?.reserveDate ?? undefined;
-        if(req.user.role !== "admin") userId = user.id;
+        if(req.user.role !== "admin") userId = req.user.id;
 
         const waitlists = await getWaitlist(userId, spaceId, reserveDate);
 
